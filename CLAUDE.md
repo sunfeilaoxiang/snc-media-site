@@ -39,6 +39,18 @@ evaluated and dropped: its API is read-only, you cannot deploy code to it.)
   `@theme` block so React-island utilities (`bg-green`, `text-sage`,
   `font-mono`, `border-dim`) pull from the same palette as the Astro/CSS
   components.
+  - **GOTCHA — keep ALL base/element resets in `@layer base`.** Tailwind v4
+    utilities live in `@layer utilities`, and **unlayered CSS beats any `@layer`
+    rule regardless of specificity**. So a top-level `*{padding:0;margin:0}`
+    reset zeroes every `p-*`/`m-*` utility in the islands (→ "crammed" layout),
+    and a top-level `a{color:inherit}` overrides `text-green`/`text-sage` on
+    island links (→ invisible/wrong-colour text, e.g. a white-on-white CTA).
+    Both bit this site (`d23b994`, `0b16c3d`) before the resets were wrapped in
+    `@layer base`. Diagnose via `getComputedStyle` (a `p-6` element showing
+    `padding:0`, or a `text-green` link showing `color: rgb(255,255,255)`).
+    Unlayered component CSS (`.btn`, scoped `.astro` `<style>`) still wins on
+    plain pages, so wrapping the resets is safe. Detail:
+    `knowledge/feedback_tailwind_unlayered_reset_zeroes_utilities.md`.
 - **React 19 islands + Framer Motion 12** — interactive sections are React
   components hydrated with `client:visible`. **One island today:**
   `src/components/AuditTeardown.tsx` (the animated Meta-account teardown on both
