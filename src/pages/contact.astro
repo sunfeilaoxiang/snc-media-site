@@ -280,31 +280,47 @@ const steps = [
       submit.disabled = true;
       submit.textContent = 'Отправляем…';
 
-      try {
-        const res = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(form),
-        });
-        const data = await res.json();
-        if (data.success) {
-          // Redirect to the thank-you page (which fires the Lead conversion).
+      // Submit with ONE automatic retry before giving up. A transient
+      // Web3Forms hiccup or a flaky network on the first POST usually
+      // succeeds on the second, so a blip never dead-ends the visitor.
+      let lastErr: unknown = null;
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          const res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: new FormData(form),
+          });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message || 'submit failed');
+
+          // Success → thank-you page (which fires the Lead conversion).
           const redirect = form.dataset.redirect;
           if (redirect) { window.location.href = redirect; return; }
           status.textContent =
             'Заявка отправлена. Ответим в течение одного рабочего дня.';
           status.className = 'form-status ok';
           submit.textContent = 'Отправлено';
-        } else {
-          throw new Error(data.message || 'submit failed');
+          return;
+        } catch (err) {
+          lastErr = err;
+          console.error('[contact] Web3Forms submit attempt ' + attempt + ' failed:', err);
+          if (attempt === 1) {
+            submit.textContent = 'Повторяем…';
+            await new Promise((r) => setTimeout(r, 1500));
+          }
         }
-      } catch {
-        status.textContent =
-          'Не удалось отправить. Попробуйте ещё раз или напишите нам в Telegram.';
-        status.className = 'form-status err';
-        submit.disabled = false;
-        submit.textContent = 'Запросить разбор';
       }
+
+      // Both attempts failed — give a real way out, not a dead end.
+      console.error('[contact] submit failed after retry; last error:', lastErr);
+      status.innerHTML =
+        'Не удалось отправить. Напишите напрямую — так даже быстрее: ' +
+        '<a href="https://t.me/sunnfeii">Telegram</a> · ' +
+        '<a href="mailto:dmitrijs@sncads.com">dmitrijs@sncads.com</a>. Или попробуйте ещё раз.';
+      status.className = 'form-status err';
+      submit.disabled = false;
+      submit.textContent = 'Запросить разбор';
     });
   }
 </script>
