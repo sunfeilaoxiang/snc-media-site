@@ -75,6 +75,7 @@ const consent = (ui[locale] ?? ui.ru).consent;
     <script is:inline>
       (function () {
         var GA4_ID = 'G-C480L71EX6';
+        var GADS_ID = 'AW-18229716107'; // Google Ads — conversion tracking
         var PIXEL_ID = '1857063391638735';
         window.sncConsent = {
           load: function () {
@@ -89,6 +90,7 @@ const consent = (ui[locale] ?? ui.ru).consent;
             window.gtag = function () { window.dataLayer.push(arguments); };
             window.gtag('js', new Date());
             window.gtag('config', GA4_ID);
+            window.gtag('config', GADS_ID); // Google Ads — reuses the gtag.js already loaded for GA4
             // Meta Pixel
             !function (f, b, e, v, n, t, s) {
               if (f.fbq) return;

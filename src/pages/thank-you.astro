@@ -58,6 +58,8 @@ import { url } from '../lib/links';
 
     var eventId = uuid();
     if (window.gtag) window.gtag('event', 'generate_lead');
+    // Google Ads — SNC Lead conversion (consent-gated + fire-once, same as above).
+    if (window.gtag) window.gtag('event', 'conversion', { send_to: 'AW-18229716107/rBRcCPPd9sccEIvJzfRD' });
     if (window.fbq) window.fbq('track', 'Lead', {}, { eventID: eventId });
 
     // Server-side mirror — fires even when the browser Pixel is blocked
