@@ -158,8 +158,7 @@ lead-magnet/
    on the 12 items; PDF saved to `public/downloads/`; build `/audit-checklist`
    landing page with email-capture form (uses Web3Forms); add homepage CTA strip;
    translate to RU.
-2. **No case studies.** `/cases` is methodology-only. Highest-impact gap. Needs
-   1–2 anonymized cases from Nikita's prior work (real numbers, anonymized).
+2. **Case studies — LIVE (shipped 2026-07-02, commit `c1f404f`).** `/cases` carries **two anonymized audit teardowns** (US haircare + EU skincare), RU+EN, real Shopify-reconciled numbers, brand names under NDA (both clients consented). Design: forest readout panel + ROAS gauge with a break-even threshold line + niche band + labeled story beats. Verified live at sncads.com/cases.
 3. **Founder section** — monogram letters (Н/Г, N/G), not photos. Needs real
    photos + named credentials.
 4. **End-to-end dedup verify** — incognito submit → confirm `Test Events` shows
