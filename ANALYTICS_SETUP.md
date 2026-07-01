@@ -1,6 +1,7 @@
 # Analytics setup — SNC Advertising site
 
 **Status (2026-05-23) — ✅ INSTALLED (consent-gated)**
+
 - **GA4 `G-C480L71EX6`** + **Meta Pixel `1857063391638735`** are installed in
   `src/layouts/Base.astro`, loaded **only after** the visitor accepts the GDPR
   consent banner. `Lead` / `generate_lead` conversion events fire on a successful
@@ -17,11 +18,29 @@
 Live site (new URL after the 2026-05-23 rename):
 **https://sncads.com/**
 
+**Microsoft Clarity (heatmaps + session replay) — ✅ INSTALLED 2026-07-02 (consent-gated)**
+
+- **Clarity project `xftv3dksec`** ("SNC Advertising") lives in
+  `src/layouts/Base.astro` inside the same consent-gated loader as GA4 + Pixel —
+  loads **only after** Accept, initializes once (`sncAnalyticsLoaded` guard), and
+  tracks View-Transition navigations on its own.
+- **Consent copy** (RU + EN in `src/i18n/ui.ts`) names "session recording" /
+  "запись сессий", since Clarity records replay, not just analytics cookies.
+- **Linked to GA4** — connected to the GA4 property **"SNC Advertising Website"**
+  (`G-C480L71EX6`) via Clarity → Settings → Setup → Google Analytics integration.
+  Lets you filter heatmaps/recordings by GA4 segment (e.g. Meta-ad traffic).
+- **To view data:** clarity.microsoft.com → **SNC Advertising** project →
+  **Recordings** / **Heatmaps**. Those tabs stay locked until Clarity detects
+  traffic; first heatmaps typically appear ~2 h after real consented visits.
+- **Privacy:** content masking is on by default (Balanced) — form inputs / PII
+  are masked in recordings.
+
 ---
 
 ## 1. GA4 (Google Analytics 4) — you already have the ID
 
 `G-C480L71EX6` is ready to install. Two notes:
+
 - A GA4 tag tracks whatever page it's placed on, so it works on the new URL.
 - Its **data stream was registered against the OLD `/snc-media-site/` URL**. The
   tag still tracks fine, but to keep reporting clean, update the stream URL:
@@ -30,6 +49,7 @@ Live site (new URL after the 2026-05-23 rename):
   `https://sncads.com/`
 
 **If you ever need a fresh Measurement ID:**
+
 1. analytics.google.com → **Admin** → (create a Property if needed) →
    **Data streams** → **Add stream** → **Web**
 2. Enter the site URL, name it, **Create stream**
@@ -59,6 +79,7 @@ Live site (new URL after the 2026-05-23 rename):
 ## 3. One decision before install — GDPR consent
 
 EU traffic + GA4/Pixel both set cookies. Pick one:
+
 - **Minimal consent banner** — tags fire only after the visitor clicks "Accept."
   Recommended for EU compliance.
 - **Ship without** for now, add a banner later.
@@ -68,6 +89,7 @@ Tell Claude which; the banner is a small addition to `Base.astro`.
 ---
 
 ## Parked notes (unrelated to analytics — moved here so they're not lost)
+
 - **Nikita:** dislikes the contact-form dropdowns at `/contact/` — wants them
   more minimalistic. (Now tracked as TASKS.md **D3.j**.)
 - **"Prepare FMS case"** — relates to Case Study #1 (TASKS.md **C2 / D3.f**),
