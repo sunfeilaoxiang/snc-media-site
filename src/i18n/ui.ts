@@ -44,7 +44,7 @@ export const ui: Record<Locale, UiStrings> = {
     langLabel: 'EN',
     langAria: 'Switch to English',
     consent: {
-      text: 'Мы используем аналитические cookie, чтобы видеть, что работает на сайте. Без них сайт работает так же.',
+      text: 'Мы используем аналитические cookie и запись сессий, чтобы видеть, что работает на сайте. Без них сайт работает так же.',
       accept: 'Принять',
       decline: 'Отклонить',
     },
@@ -84,7 +84,7 @@ export const ui: Record<Locale, UiStrings> = {
     langLabel: 'RU',
     langAria: 'Переключить на русский',
     consent: {
-      text: 'We use analytics cookies to see what works on the site. Everything works without them, too.',
+      text: 'We use analytics cookies and session recording to see what works on the site. Everything works without them, too.',
       accept: 'Accept',
       decline: 'Decline',
     },
