@@ -1,12 +1,104 @@
 ---
 /**
- * Cases page — methodology only (decided 2026-05-17).
- * SNC has no client cases yet. This page is honest about that and shows
- * how results are measured + what a case study will contain. No fake
- * logos, no borrowed results.
+ * Cases page — two anonymized audit teardowns (real numbers) + methodology.
+ * Story per case: NICHE band → PROBLEM (headline) → PROOF (forest readout:
+ * hero stat + ROAS gauge with a break-even THRESHOLD LINE) → NUMBERS (tiles) →
+ * WHAT WE FOUND (bulleted) → OUTCOME (green payoff callout / fix checklist).
+ * Colour semantics: bronze = loss, sage(dark)/green(light) = SNC's resolution.
+ * Anonymized until the client clears the name. Numbers reconciled against Shopify.
+ * Keep structure + styles in sync with src/pages/en/cases.astro.
  */
 import Base from '../layouts/Base.astro';
 import CtaClosing from '../components/CtaClosing.astro';
+
+const SCALE = 2.0; // gauge axis: 0 → 2.0× ROAS
+const bw = (v: number) => Math.round((v / SCALE) * 100);
+const BE = 1.7; // break-even ROAS
+
+const ICON_BOTTLE =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="9" width="10" height="12" rx="2"/><path d="M10 9V6h4v3"/><rect x="9.5" y="3" width="5" height="3" rx="1"/></svg>';
+const ICON_JAR =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M5 13h14"/><rect x="8" y="4" width="8" height="6" rx="1.5"/></svg>';
+const CHECK =
+  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.1 3.1L13 4.5"/></svg>';
+
+const a = {
+  niche: 'Уход за волосами',
+  icon: ICON_BOTTLE,
+  chips: ['США', 'Shopify DTC', 'Meta Ads'],
+  headline: '$118, чтобы получить заказ на $50.',
+  lede: 'Аккаунт тратил $38 246 за 8 недель при проверенном ROAS 0.48× — примерно в 3.5 раза ниже точки безубыточности. Meta показывала 0.43×. Мы свели её данные с Shopify: канал терял деньги на каждом заказе.',
+  vizLabel: 'ROAS против безубытка',
+  stat: '0.48×',
+  statCap: 'проверенный ROAS',
+  chart: {
+    aria: 'Проверенный ROAS 0.48× против точки безубыточности 1.7×',
+    rows: [{ label: 'Ваш ROAS', v: 0.48, tone: 'loss' }],
+  },
+  metrics: [
+    { n: '$38 246', l: 'расход за 8 недель' },
+    { n: '$148', l: 'CPM — самый дорогой рынок мира' },
+    { n: '81%', l: 'бюджета на возраст 45+, покупатель моложе' },
+    { n: '0', l: 'каталожных объявлений на весь ассортимент' },
+  ],
+  found: [
+    '66 кампаний, большинство жили 1–2 недели — не успевали обучиться',
+    'Потолок ставки $110 принимал почти любую дорогую конверсию',
+    'Креатив обрезался под плейсменты',
+    'Каталожные объявления — самый дешёвый формат для ecommerce — не использовались',
+  ],
+  outcome: {
+    label: 'Итог',
+    body: 'Мы не стали «спасать» убыточный канал ради гонорара. Показали цифрами, что он теряет деньги, и расход остановили. Деньги ушли туда, где окупаются. Иногда лучший результат по рекламе — перестать её лить.',
+    callout: { n: '$27 000', l: 'убыточного расхода за 8 недель — остановлено' },
+  },
+};
+
+const b = {
+  niche: 'Уходовая косметика',
+  icon: ICON_JAR,
+  chips: ['ЕС', 'Shopify DTC', 'Meta Ads'],
+  headline: 'Meta показывала 1.5×. Реальность — 0.35×.',
+  lede: 'Разрыв вчетверо между тем, что заявляла Meta, и тем, что подтверждал Shopify. Причина простая: в аккаунте не было UTM-меток, и около 30% заказов приходили с источником «не определён». Пока данные не свели, картина выглядела приемлемой. После — уже нет.',
+  vizLabel: 'Заявлено против реального',
+  stat: '0.35×',
+  statCap: 'реальный ROAS · Meta заявляла 1.5×',
+  chart: {
+    aria: 'Заявленный ROAS 1.5×, реальный 0.35×, точка безубыточности 1.7×',
+    rows: [
+      { label: 'Meta заявляла', v: 1.5, val: '1.5×', tone: 'ghost' },
+      { label: 'Реально', v: 0.35, tone: 'loss' },
+    ],
+  },
+  metrics: [
+    { n: '~30%', l: 'заказов без источника — трекинг был сломан' },
+    { n: '~40%', l: 'бюджета на возраст 55–65+, покупатель 28–45' },
+    { n: '75%', l: 'из €335 на плейсменты с обрезанным креативом' },
+    { n: '0', l: 'каталожных объявлений на 100+ SKU' },
+  ],
+  found: [
+    '5–6 кампаний конкурировали между собой за одну аудиторию',
+    'Оптимизация стояла на «добавление в корзину», а не на покупку',
+    'На обрезанных плейсментах кнопка была не видна — туда уходил тест',
+  ],
+  outcome: {
+    label: 'Что делаем',
+    body: 'Правки внедряются без увеличения бюджета:',
+    checklist: [
+      'UTM-метки и чистый трекинг',
+      'Разделение плейсментов',
+      'Сужение возраста до 28–45',
+      'Каталожный пилот',
+      'Приоритет на маржинальные товары',
+    ],
+    note: 'Имя бренда под NDA — полную версию показываем на аудите.',
+  },
+};
+
+const cases = [
+  { c: a, sec: 'section-dark', label: 'Кейс 01', labelClass: 'sec-label on-dark' },
+  { c: b, sec: 'section-light', label: 'Кейс 02', labelClass: 'sec-label' },
+];
 
 const measure = [
   {
@@ -18,109 +110,266 @@ const measure = [
     body: 'Целевая стоимость лида и его качество — вместе, не по отдельности. Дешёвый бесполезный лид не считается результатом. Конверсия лида в продажу — частично ваша зона, и мы говорим об этом прямо.',
   },
 ];
-
-const structure = [
-  { t: 'Профиль клиента', d: 'Вертикаль, рынок, размер. Анонимно — до тех пор, пока клиент не разрешит имя.' },
-  { t: 'Задача',          d: 'Что было сломано или недополучено. Конкретно, без «вызовов рынка».' },
-  { t: 'Что сделали',     d: 'Конкретные действия по аккаунту. Не «разработали стратегию».' },
-  { t: 'Метрики',         d: 'До и после. С указанием базы расчёта, не вырванное число.' },
-  { t: 'Срок',            d: 'За сколько. Без срока цифра не значит ничего.' },
-];
 ---
 
 <Base
-  title="Кейсы — SNC Advertising | Как мы измеряем результат"
-  description="SNC Advertising запущена в 2026. Кейсы появятся по мере выхода первых клиентов из NDA. Здесь — как мы измеряем результат и из чего будет состоять каждый кейс."
+  title="Кейсы — SNC Advertising | Два разбора реальных аккаунтов"
+  description="Два реальных Meta-аккаунта, разобранных SNC Advertising: ниша, проблема, цифры. Анонимно, но с настоящими данными, сверенными с Shopify."
 >
   <section class="page-hero">
     <div class="page-hero-label">Кейсы</div>
-    <h1 class="page-hero-h1">Кейсы — в работе.</h1>
+    <h1 class="page-hero-h1">Два разбора.<br />Настоящие цифры, без имён.</h1>
     <p class="page-hero-lede">
-      SNC Advertising запущена в 2026. Анонимизированные кейсы появятся здесь по мере
-      выхода первых клиентов из NDA. Пока — честно о том, как мы измеряем
-      результат и из чего будет состоять каждый кейс.
+      Кейсов с именами клиентов пока нет — они появятся, когда клиенты выйдут из
+      NDA. Ниже два реальных аккаунта, которые мы разобрали. Анонимно, но с
+      настоящими цифрами, сверенными с Shopify.
     </p>
   </section>
 
-  <!-- Как измеряем -->
-  <section class="section section-dark">
-    <div class="sec-label on-dark">01 — Как мы измеряем результат</div>
+  {cases.map(({ c, sec, label, labelClass }) => (
+    <section class={`section ${sec}`}>
+      <div class={labelClass}>{label}</div>
+
+      <!-- Niche band -->
+      <div class="niche">
+        <span class="niche-icon" aria-hidden="true" set:html={c.icon} />
+        <div>
+          <div class="niche-name">{c.niche}</div>
+          <div class="niche-chips">
+            {c.chips.map((ch) => <span class="chip">{ch}</span>)}
+          </div>
+        </div>
+      </div>
+
+      <div class="caserow">
+        <div class="case-narr">
+          <div class="beat">Проблема</div>
+          <h2 class="case-headline">{c.headline}</h2>
+          <p class="case-lede">{c.lede}</p>
+        </div>
+
+        <div class="readout" role="img" aria-label={c.chart.aria}>
+          <div class="beat beat-viz">{c.vizLabel}</div>
+          <div class="readout-stat">{c.stat}</div>
+          <div class="readout-cap">{c.statCap}</div>
+          <div class="gauge">
+            {c.chart.rows.map((r) => (
+              <div class="grow">
+                <span class="glabel">{r.label}</span>
+                <span class="gtrack">
+                  <span class={`gfill gfill-${r.tone}`} style={`width:${bw(r.v)}%`}></span>
+                  <span class="gbe" style={`left:${bw(BE)}%`}></span>
+                </span>
+                <span class="gval">{r.val ?? ''}</span>
+              </div>
+            ))}
+            <div class="gauge-key"><span class="gbe-swatch"></span>штрих — точка безубытка 1.7×</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="beat beat-metrics">В цифрах</div>
+      <div class="case-metrics">
+        {c.metrics.map((m) => (
+          <div class="cm">
+            <div class="cm-n">{m.n}</div>
+            <div class="cm-l">{m.l}</div>
+          </div>
+        ))}
+      </div>
+
+      <div class="case-cols">
+        <div>
+          <h3 class="beat">Что нашли</h3>
+          <ul class="findings">
+            {c.found.map((f) => <li>{f}</li>)}
+          </ul>
+        </div>
+        <div class="case-out">
+          <h3 class="beat beat-out">{c.outcome.label}</h3>
+          <p class="case-body">{c.outcome.body}</p>
+          {c.outcome.callout && (
+            <div class="payoff">
+              <div class="payoff-n">{c.outcome.callout.n}</div>
+              <div class="payoff-l">{c.outcome.callout.l}</div>
+            </div>
+          )}
+          {c.outcome.checklist && (
+            <ul class="fixlist">
+              {c.outcome.checklist.map((f) => (
+                <li><span class="tick" aria-hidden="true" set:html={CHECK} />{f}</li>
+              ))}
+            </ul>
+          )}
+          {c.outcome.note && <p class="case-note">{c.outcome.note}</p>}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- How we measure -->
+  <section class="section section-warm">
+    <div class="sec-label">03 — Как мы измеряем результат</div>
     <div class="measure-grid">
       {measure.map((m) => (
         <div class="measure">
           <h3 class="measure-name">{m.name}</h3>
-          <p class="measure-body muted-dark">{m.body}</p>
+          <p class="measure-body">{m.body}</p>
         </div>
       ))}
     </div>
   </section>
 
-  <!-- Из чего состоит кейс -->
-  <section class="section section-light">
-    <div class="sec-label">02 — Из чего будет состоять кейс</div>
-    <div class="struct">
-      {structure.map((s) => (
-        <div class="struct-row">
-          <h3 class="struct-t">{s.t}</h3>
-          <p class="struct-d muted-light">{s.d}</p>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- Отчётность -->
-  <section class="section section-warm">
-    <div class="sec-label">03 — Так выглядит работа</div>
-    <h2 class="statement" style="margin-top:24px;max-width:680px;">
-      Прозрачность видно ещё до того, как появится кейс.
-    </h2>
-    <p class="lede muted-light" style="margin-top:20px;">
-      Дашборд с цифрами с первого дня. Письменные апдейты. Ежемесячный
-      обзор с разбором, что сработало и что дальше. Кейс — это просто итог такой
-      работы за период.
-    </p>
-  </section>
-
-  <!-- Честная нота -->
+  <!-- Honest note -->
   <section class="section section-forest">
     <div class="sec-label on-dark">04 — Честно</div>
     <h2 class="statement" style="margin-top:24px;max-width:680px;">
-      Мы не публикуем чужие логотипы и чужие результаты.
+      Мы не выдаём чужие логотипы и результаты за свои.
     </h2>
     <p class="lede muted-dark" style="margin-top:20px;">
-      Кейсы на этой странице появятся настоящими — с реальными цифрами реальных
-      клиентов SNC. Хотите посмотреть результаты прошлых проектов основателей —
-      спросите на аудите, покажем лично.
+      Цифры выше настоящие и сверены с Shopify. Имена скрыты, пока клиент не
+      разрешит их назвать. Полную версию — с именем бренда и всеми кампаниями —
+      показываем на аудите.
     </p>
   </section>
 
   <CtaClosing
-    statement="Хотите увидеть<br />цифры?"
-    body="На аудите покажем результаты прошлых проектов и разберём ваш аккаунт."
+    statement="Хотите увидеть<br />ваши цифры?"
+    body="На аудите разберём ваш аккаунт и сверим Meta с реальными продажами."
   />
 </Base>
 
 <style>
-  .measure-grid {
+  /* Story beat labels */
+  .beat {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.09em;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .beat-metrics { margin-top: 34px; margin-bottom: 14px; }
+
+  /* Niche band */
+  .niche { display: flex; align-items: center; gap: 15px; margin-top: 22px; }
+  .niche-icon { width: 40px; height: 40px; flex: none; display: block; }
+  .niche-icon :global(svg) { width: 100%; height: 100%; }
+  .niche-name { font-size: 20px; font-weight: 600; letter-spacing: 0.01em; line-height: 1.1; }
+  .niche-chips { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip {
+    font-size: 10.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 9px; border: 1px solid; border-radius: 2px;
+  }
+
+  /* Narrative + readout row */
+  .caserow {
     margin-top: 28px;
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
-    background: var(--dim); border: 1px solid var(--dim);
+    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 44px;
+    align-items: start;
   }
-  .measure { background: var(--nearblack); padding: 28px 24px; }
-  .measure-name { font-size: 15px; font-weight: 600; color: var(--sage); }
-  .measure-body { margin-top: 12px; font-size: 14px; line-height: 1.75; }
+  .case-headline { font-size: clamp(28px, 4.3vw, 44px); font-weight: 600; line-height: 1.13; }
+  .case-lede { margin-top: 18px; font-size: 16px; line-height: 1.72; max-width: 620px; }
 
-  .struct { margin-top: 28px; }
-  .struct-row {
-    display: grid; grid-template-columns: 200px 1fr; gap: 24px;
-    padding: 20px 0; border-top: 1px solid var(--dim-light);
+  /* Deep-forest readout — bronze always passes contrast here */
+  .readout {
+    background: var(--forest);
+    border: 1px solid rgba(191, 147, 64, 0.28);
+    padding: 24px 26px 26px;
+    color: var(--white);
   }
-  .struct-row:last-child { border-bottom: 1px solid var(--dim-light); }
-  .struct-t { font-size: 15px; font-weight: 600; color: var(--green); }
-  .struct-d { font-size: 14px; line-height: 1.75; }
+  .beat-viz { color: var(--sage); }
+  .readout-stat {
+    font-size: clamp(46px, 6vw, 64px);
+    font-weight: 600; line-height: 1; letter-spacing: -0.02em;
+    color: var(--bronze); font-variant-numeric: tabular-nums;
+  }
+  .readout-cap { margin-top: 10px; font-size: 12.5px; line-height: 1.5; color: rgba(255, 255, 255, 0.7); }
 
+  /* ROAS gauge — value bars + a break-even THRESHOLD line */
+  .gauge { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .grow { display: grid; grid-template-columns: 108px 1fr 40px; gap: 12px; align-items: center; }
+  .glabel { font-size: 11.5px; color: rgba(255, 255, 255, 0.66); }
+  .gtrack { position: relative; height: 12px; background: rgba(255, 255, 255, 0.08); }
+  .gfill { position: absolute; left: 0; top: 0; height: 100%; }
+  .gfill-loss { background: var(--bronze); }
+  .gfill-ghost {
+    background: repeating-linear-gradient(45deg, rgba(191,147,64,0.3), rgba(191,147,64,0.3) 4px, transparent 4px, transparent 8px);
+    box-shadow: inset 0 0 0 1px rgba(191, 147, 64, 0.5);
+  }
+  .gbe { position: absolute; top: -4px; height: 20px; width: 0; border-left: 1.5px dashed var(--sage); }
+  .gval { font-size: 13px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, 0.85); }
+  .gauge-key { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 11px; color: rgba(255, 255, 255, 0.55); }
+  .gbe-swatch { width: 16px; height: 0; border-top: 1.5px dashed var(--sage); flex: none; }
+
+  /* Metric tiles */
+  .case-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; }
+  .cm { padding: 22px 18px; }
+  .cm-n { font-size: 30px; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .cm-l { margin-top: 9px; font-size: 12.5px; line-height: 1.5; }
+
+  /* Found / Outcome */
+  .case-cols { margin-top: 34px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 940px; }
+  .findings { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }
+  .findings li { position: relative; padding-left: 18px; font-size: 15px; line-height: 1.6; }
+  .findings li::before { content: "—"; position: absolute; left: 0; opacity: 0.55; }
+
+  .case-out { border-left: 2px solid; padding-left: 22px; }
+  .case-body { font-size: 15px; line-height: 1.76; }
+  .case-note { margin-top: 14px; font-size: 12.5px; line-height: 1.5; opacity: 0.7; }
+
+  /* Outcome payoff callout (Case A) */
+  .payoff { margin-top: 16px; display: flex; flex-direction: column; gap: 3px; }
+  .payoff-n { font-size: 30px; font-weight: 600; line-height: 1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .payoff-l { font-size: 12.5px; line-height: 1.45; opacity: 0.85; }
+
+  /* Fix checklist (Case B) */
+  .fixlist { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-direction: column; gap: 9px; }
+  .fixlist li { display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.4; }
+  .tick { width: 16px; height: 16px; flex: none; display: block; }
+  .tick :global(svg) { width: 100%; height: 100%; }
+
+  /* Dark tone (Case A) */
+  .section-dark .niche-icon, .section-dark .niche-name { color: var(--white); }
+  .section-dark .chip { color: rgba(255, 255, 255, 0.72); border-color: rgba(255, 255, 255, 0.22); }
+  .section-dark .beat { color: var(--sage); }
+  .section-dark .case-metrics { background: var(--dim); border: 1px solid var(--dim); }
+  .section-dark .cm { background: var(--nearblack); }
+  .section-dark .cm-n { color: var(--white); }
+  .section-dark .cm-l { color: rgba(255, 255, 255, 0.62); }
+  .section-dark .case-lede, .section-dark .case-body, .section-dark .findings li { color: rgba(255, 255, 255, 0.84); }
+  /* resolution = sage on dark */
+  .section-dark .beat-out { color: var(--sage); }
+  .section-dark .case-out { border-left-color: var(--sage); }
+  .section-dark .payoff-n, .section-dark .tick { color: var(--sage); }
+
+  /* Light tone (Case B) */
+  .section-light .niche-icon, .section-light .niche-name { color: var(--green); }
+  .section-light .chip { color: var(--text-dim); border-color: var(--dim-light); }
+  .section-light .beat { color: var(--green); }
+  .section-light .case-metrics { background: var(--dim-light); border: 1px solid var(--dim-light); }
+  .section-light .cm { background: var(--offwhite); }
+  .section-light .cm-n { color: var(--green); }
+  .section-light .cm-l { color: var(--text-dim); }
+  .section-light .case-lede, .section-light .case-body, .section-light .findings li { color: #2c2c2c; }
+  .section-light .beat-viz { color: var(--sage); } /* readout is always dark */
+  /* resolution = green on light */
+  .section-light .beat-out { color: var(--green); }
+  .section-light .case-out { border-left-color: var(--green); }
+  .section-light .payoff-n, .section-light .tick { color: var(--green); }
+
+  /* How we measure */
+  .measure-grid {
+    margin-top: 28px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--dim-light); border: 1px solid var(--dim-light);
+  }
+  .measure { background: var(--offwhite); padding: 28px 24px; }
+  .measure-name { font-size: 15px; font-weight: 600; color: var(--green); }
+  .measure-body { margin-top: 12px; font-size: 14.5px; line-height: 1.75; color: var(--text-dim); }
+
+  @media (max-width: 900px) {
+    .caserow { grid-template-columns: 1fr; gap: 26px; }
+  }
   @media (max-width: 760px) {
+    .case-metrics { grid-template-columns: repeat(2, 1fr); }
+    .case-cols { grid-template-columns: 1fr; gap: 26px; }
+    .case-out { border-left: 0; border-top: 2px solid; padding-left: 0; padding-top: 18px; }
     .measure-grid { grid-template-columns: 1fr; }
-    .struct-row { grid-template-columns: 1fr; gap: 6px; }
   }
 </style>
