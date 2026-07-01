@@ -139,6 +139,7 @@ const consent = (ui[locale] ?? ui.ru).consent;
     <Footer />
 
     {/* ── GDPR consent banner — gates the analytics loader above ── */}
+    <div id="consent-scrim" class="consent-scrim" hidden></div>
     <div id="consent" class="consent" role="dialog" aria-label="Cookies" hidden>
       <p class="consent-text">{consent.text}</p>
       <div class="consent-actions">
@@ -149,14 +150,17 @@ const consent = (ui[locale] ?? ui.ru).consent;
     <script is:inline>
       (function () {
         var el = document.getElementById('consent');
+        var scrim = document.getElementById('consent-scrim');
         if (!el || !window.sncConsent) return;
         if (window.sncConsent.state()) return; // already accepted or declined
+        function hide() { el.hidden = true; if (scrim) scrim.hidden = true; }
         el.hidden = false;
+        if (scrim) scrim.hidden = false;
         document.getElementById('consent-accept').addEventListener('click', function () {
-          window.sncConsent.accept(); el.hidden = true;
+          window.sncConsent.accept(); hide();
         });
         document.getElementById('consent-decline').addEventListener('click', function () {
-          window.sncConsent.decline(); el.hidden = true;
+          window.sncConsent.decline(); hide();
         });
       })();
     </script>
@@ -242,13 +246,33 @@ const consent = (ui[locale] ?? ui.ru).consent;
     display: flex; align-items: center; justify-content: space-between;
     gap: 16px 28px; flex-wrap: wrap;
     background: var(--nearblack);
-    border-top: 1px solid var(--dim);
-    padding: 16px clamp(20px, 5vw, 64px);
+    border-top: 1px solid var(--sage);
+    padding: 18px clamp(20px, 5vw, 64px);
+    box-shadow: 0 -10px 44px rgba(0, 0, 0, 0.5);
+    animation: consent-bar-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .consent[hidden] { display: none; }
+  /* Dimming scrim behind the banner — makes the choice hard to ignore without
+     dark-patterning (Accept/Decline stay the same size). Sits just below the
+     bar (z 199 < 200) and dims the page so a choice actually gets made. */
+  .consent-scrim {
+    position: fixed; inset: 0; z-index: 199;
+    background: rgba(8, 10, 9, 0.55);
+    backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+    animation: consent-fade-in 0.35s ease both;
+  }
+  .consent-scrim[hidden] { display: none; }
+  @keyframes consent-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes consent-bar-in {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .consent, .consent-scrim { animation: none; }
+  }
   .consent-text {
     margin: 0; max-width: 760px;
-    font-size: 12px; line-height: 1.6; color: rgba(255, 255, 255, 0.72);
+    font-size: 13px; line-height: 1.6; color: rgba(255, 255, 255, 0.82);
   }
   .consent-actions { display: flex; gap: 10px; flex-shrink: 0; }
   .consent-btn {
