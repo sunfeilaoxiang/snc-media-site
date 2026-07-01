@@ -139,27 +139,27 @@ const consent = (ui[locale] ?? ui.ru).consent;
     <Footer />
 
     {/* ── GDPR consent banner — gates the analytics loader above ── */}
-    <div id="consent-scrim" class="consent-scrim" hidden></div>
-    <div id="consent" class="consent" role="dialog" aria-label="Cookies" hidden>
-      <p class="consent-text">{consent.text}</p>
-      <div class="consent-actions">
-        <button type="button" class="consent-btn consent-accept" id="consent-accept">{consent.accept}</button>
-        <button type="button" class="consent-btn consent-decline" id="consent-decline">{consent.decline}</button>
+    <div id="site-notice-scrim" class="site-notice-scrim" hidden></div>
+    <div id="site-notice" class="site-notice" role="dialog" aria-label="Site notice" hidden>
+      <p class="site-notice-text">{consent.text}</p>
+      <div class="site-notice-actions">
+        <button type="button" class="site-notice-btn site-notice-accept" id="site-notice-accept">{consent.accept}</button>
+        <button type="button" class="site-notice-btn site-notice-decline" id="site-notice-decline">{consent.decline}</button>
       </div>
     </div>
     <script is:inline>
       (function () {
-        var el = document.getElementById('consent');
-        var scrim = document.getElementById('consent-scrim');
+        var el = document.getElementById('site-notice');
+        var scrim = document.getElementById('site-notice-scrim');
         if (!el || !window.sncConsent) return;
         if (window.sncConsent.state()) return; // already accepted or declined
         function hide() { el.hidden = true; if (scrim) scrim.hidden = true; }
         el.hidden = false;
         if (scrim) scrim.hidden = false;
-        document.getElementById('consent-accept').addEventListener('click', function () {
+        document.getElementById('site-notice-accept').addEventListener('click', function () {
           window.sncConsent.accept(); hide();
         });
-        document.getElementById('consent-decline').addEventListener('click', function () {
+        document.getElementById('site-notice-decline').addEventListener('click', function () {
           window.sncConsent.decline(); hide();
         });
       })();
@@ -241,7 +241,7 @@ const consent = (ui[locale] ?? ui.ru).consent;
 </html>
 
 <style>
-  .consent {
+  .site-notice {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
     display: flex; align-items: center; justify-content: space-between;
     gap: 16px 28px; flex-wrap: wrap;
@@ -249,40 +249,40 @@ const consent = (ui[locale] ?? ui.ru).consent;
     border-top: 1px solid var(--sage);
     padding: 18px clamp(20px, 5vw, 64px);
     box-shadow: 0 -10px 44px rgba(0, 0, 0, 0.5);
-    animation: consent-bar-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: site-notice-bar-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  .consent[hidden] { display: none; }
-  /* Dimming scrim behind the banner — makes the choice hard to ignore without
+  .site-notice[hidden] { display: none; }
+  /* Dimming scrim behind the bar — makes the choice hard to ignore without
      dark-patterning (Accept/Decline stay the same size). Sits just below the
      bar (z 199 < 200) and dims the page so a choice actually gets made. */
-  .consent-scrim {
+  .site-notice-scrim {
     position: fixed; inset: 0; z-index: 199;
     background: rgba(8, 10, 9, 0.55);
     backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
-    animation: consent-fade-in 0.35s ease both;
+    animation: site-notice-fade-in 0.35s ease both;
   }
-  .consent-scrim[hidden] { display: none; }
-  @keyframes consent-fade-in { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes consent-bar-in {
+  .site-notice-scrim[hidden] { display: none; }
+  @keyframes site-notice-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes site-notice-bar-in {
     from { transform: translateY(100%); }
     to { transform: translateY(0); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .consent, .consent-scrim { animation: none; }
+    .site-notice, .site-notice-scrim { animation: none; }
   }
-  .consent-text {
+  .site-notice-text {
     margin: 0; max-width: 760px;
     font-size: 13px; line-height: 1.6; color: rgba(255, 255, 255, 0.82);
   }
-  .consent-actions { display: flex; gap: 10px; flex-shrink: 0; }
-  .consent-btn {
+  .site-notice-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  .site-notice-btn {
     font-family: var(--font); font-size: 11px; font-weight: 600;
     letter-spacing: 0.08em; text-transform: uppercase;
     padding: 10px 18px; cursor: pointer;
     border: 1px solid var(--dim); background: transparent;
     color: rgba(255, 255, 255, 0.8); transition: all 0.15s;
   }
-  .consent-accept { background: var(--green); border-color: var(--green); color: #fff; }
-  .consent-accept:hover { background: #245a45; }
-  .consent-decline:hover { border-color: var(--sage); color: #fff; }
+  .site-notice-accept { background: var(--green); border-color: var(--green); color: #fff; }
+  .site-notice-accept:hover { background: #245a45; }
+  .site-notice-decline:hover { border-color: var(--sage); color: #fff; }
 </style>
