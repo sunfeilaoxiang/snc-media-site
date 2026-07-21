@@ -295,6 +295,9 @@ const steps = [
           if (!data.success) throw new Error(data.message || 'submit failed');
 
           // Success → thank-you page (which fires the Lead conversion).
+          // The token below is what tells /thank-you this arrival is a real
+          // submission rather than a direct visit; /thank-you consumes it once.
+          try { sessionStorage.setItem('snc_lead_pending', '1'); } catch (e) {}
           const redirect = form.dataset.redirect;
           if (redirect) { window.location.href = redirect; return; }
           status.textContent =
